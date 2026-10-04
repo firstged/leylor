@@ -94,6 +94,12 @@
 
   var CUTS = ["tracée", "découpée", "patchwork", "tamponnée", "pivotée", "déboîtée"];
 
+  /* Durée du comptage, puis temps de pose sur le mot
+     entier. Une seule constante à changer pour régler
+     le rythme : six techniques méritent d'être vues. */
+  var PRE_DUREE = 2600;
+  var PRE_POSE = 400;
+
   function initPreloader() {
     var pre = $("#pre");
     if (!pre) return;
@@ -107,17 +113,18 @@
 
     document.body.classList.add("is-locked");
 
-    var p = 0;
     var landed = -1;
+    var debut = Date.now();
 
-    /* Le compteur est volontairement lent : six
-       techniques qui se chevauchent ne se voient pas.
-       Et la première lettre part dès le premier pas —
-       attendre un sixième du chargement pour montrer
-       quoi que ce soit, c'est ouvrir sur un écran
-       vide. */
+    /* Le compteur suit l'horloge et non une addition de
+       pas aléatoires : la durée est alors exacte, même
+       quand le navigateur ralentit les minuteries d'un
+       onglet masqué. La première lettre part dès le
+       premier pas — attendre un sixième du chargement
+       pour montrer quoi que ce soit, c'est ouvrir sur un
+       écran vide. */
     var tick = setInterval(function () {
-      p = Math.min(100, p + rand(1, 2.4));
+      var p = Math.min(100, (Date.now() - debut) / PRE_DUREE * 100);
       if (num) num.textContent = Math.round(p);
 
       var on = Math.min(lts.length, Math.floor(p / 100 * lts.length) + 1);
@@ -149,7 +156,7 @@
         document.body.classList.add("is-ready");
         document.dispatchEvent(new CustomEvent("leylor:ready"));
         request();
-      }, instant ? 0 : 800);
+      }, instant ? 0 : PRE_POSE);
     }
   }
 
