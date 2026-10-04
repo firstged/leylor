@@ -178,17 +178,24 @@ installer. N'importe quel hébergeur le sert tel quel.
   semaine et non un an : les photos seront remplacées au fur et à mesure qu'elle
   en fournira, et un cache d'un an les figerait chez les visiteurs.
 
-### Si LEYLOR reprend le site
+### Qui tient quoi
 
-C'est sa marque : le dépôt devrait finir chez elle, pas chez moi.
+Le **code reste ici**, sous `firstged` : la conception et l'écriture sont les
+miennes, et la signature au bas du site le dit. LEYLOR **déploie** depuis ce
+dépôt sur son propre Vercel — elle garde la maîtrise de sa mise en ligne, de son
+adresse et de son nom de domaine, sans posséder la source.
 
-1. **Transférer le dépôt** vers son compte GitHub (`Settings` → `Danger Zone` →
-   `Transfer ownership`), ou le forker si elle préfère repartir d'une copie.
+1. Je l'ajoute en **collaboratrice** du dépôt (`Settings` → `Collaborators`).
 2. Dans son projet Vercel existant : `Settings` → `Git` → déconnecter la source
-   actuelle, puis connecter le dépôt transféré. **Le projet et l'adresse
-   `leylor.vercel.app` sont conservés** — seule la source change.
-3. Chacun s'invite chez l'autre par les mécanismes prévus (collaborateur GitHub,
-   membre d'équipe Vercel). **Jamais d'échange de mots de passe.**
+   actuelle, puis importer `firstged/leylor`. GitHub demandera **mon
+   autorisation** pour que l'application Vercel accède au dépôt — je l'accorde
+   une fois. **L'adresse `leylor.vercel.app` est conservée** : seule la source
+   change.
+3. Chaque poussée sur `main` redéploie son site automatiquement.
+
+**Jamais d'échange de mots de passe** — ni les siens, ni les miens. Une
+collaboratrice se retire d'un clic, un mot de passe partagé ne se reprend
+jamais.
 
 Son numéro WhatsApp se change à la ligne 14 de `js/leylor.js`.
 

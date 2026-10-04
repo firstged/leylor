@@ -1577,6 +1577,14 @@ body.on-light .nav {
   color: rgba(246, 238, 223, .46);
 }
 .foot-base p { margin: 0; }
+/* La signature se lit comme celle qu'on pose au bas
+   d'une pièce : la mention en petites capitales, le nom
+   à la main. */
+.foot-sign { display: flex; align-items: baseline; gap: 9px; }
+.foot-sign a { color: var(--sable); transition: color .35s var(--ease); }
+.foot-sign a:hover { color: var(--papier); }
+.foot-sign .scr { font-size: 21px; letter-spacing: 0; text-transform: none; }
+
 .foot-soc { display: flex; gap: 22px; }
 .foot-soc a { transition: color .35s var(--ease); }
 .foot-soc a:hover { color: var(--papier); }
