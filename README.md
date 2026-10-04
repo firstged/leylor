@@ -102,23 +102,53 @@ Le numéro WhatsApp se change à la ligne 14 de `js/leylor.js`.
 
 ## Les photos
 
-Le site tourne pour l'instant sur des **emplacements** et non sur de vraies
-photos : chaque `.ph` est un dégradé tramé à la teinte de sa création, marqué
-`photo NN` en bas à gauche.
+Le site tourne sur **ses propres pièces**, pas sur des images trouvées en ligne.
+Trois photos de son site d'origine ont servi de matière :
 
-Pour brancher les vraies images, remplacer le bloc par une balise — le cadrage
-est porté par le parent, il n'y a rien d'autre à changer :
+| Source | Ce que c'est |
+|---|---|
+| `IMG_2924` | Le tableau **ERWYN**, remis à son destinataire un soir à Libreville |
+| `IMG_2927` | Le collage encadré **LEILA** (4032×3024) |
+| `IMG_2928` | Le collage encadré **Sindy OBONE** (4032×3024) |
+
+Les deux collages avaient été photographiés **à l'envers** : ils sont redressés.
+Leurs 12 Mpx ont ensuite été découpés en détails — un masque, des lettres de
+magazine, un lys, des cauris, un polaroid — ce qui donne **20 images** à partir
+de trois photos. Tout est recadré à la taille réellement affichée : 1,7 Mo pour
+l'ensemble du site.
+
+Les quatre autres images du site d'origine n'ont **pas** été reprises : ce sont
+des mises en scène produit trouvées en ligne (noms de fichiers en empreinte,
+735 px, couple de banque d'images devant un sapin). Elles ne montrent pas son
+travail, et c'est une des raisons pour lesquelles son site actuel paraît
+générique.
+
+### Ce qui manque encore
+
+Huit emplacements restent en attente, volontairement :
+
+- **Photobook** et **Magazine** (3 tirages chacun) — annoncés « bientôt ».
+  Les illustrer avec la production de quelqu'un d'autre reviendrait à promettre
+  ce qu'elle ne sait pas encore livrer.
+- Deux blocs du repli mobile, pour les mêmes créations.
+
+Et quatre photos à prendre dès qu'elle peut, parce que ces créations sont
+aujourd'hui illustrées par des **détails de collages** plutôt que par le format
+annoncé :
+
+1. un **cadre A4 classique** posé sur un meuble — une seule photo encadrée ;
+2. un **tirage plexiglass**, de trois quarts pour qu'on voie la lumière passer ;
+3. un **livret de couple ouvert**, à plat ;
+4. un **tableau A3 accroché au mur**, à distance, dans une pièce.
+
+Pour brancher une nouvelle image, remplacer la balise — le cadrage est porté par
+le parent, il n'y a rien d'autre à changer :
 
 ```html
-<!-- avant -->
-<figure class="pr a"><div class="ph" data-ph="01"></div></figure>
-<!-- après -->
-<figure class="pr a"><img src="img/01.jpg" alt="Cadre A4 posé sur une table"></figure>
+<figure class="pr a"><img src="img/piece-sindy.jpg" alt="…"></figure>
 ```
 
-Il en faut **douze pour la traînée du hero** (elle boucle, donc moins de douze se
-remarque) et **dix-huit pour l'album** — trois par création, puisque chaque page
-est un patchwork.
+Les emplacements encore vides se repèrent à leur `data-ph`.
 
 ## Développement
 

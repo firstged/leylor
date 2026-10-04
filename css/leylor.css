@@ -229,6 +229,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 
 /* ══════════ TIRAGES ET EMPLACEMENTS ══════════
+   Les vraies photos remplissent leur cadre par
+   recouvrement : ses pièces sont de formats très
+   différents, et les déformer serait pire que les
+   rogner. */
+
+.tr img, .pr img, .uni-mob img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: rgba(42, 13, 20, .08);
+}
+
+/* ══════════ EMPLACEMENTS EN ATTENTE ══════════
    Chaque .ph tient la place d'une photo à venir.
    Pour brancher la vraie image, remplacer le bloc
    par <img src="img/…" alt="…"> : le cadrage est
