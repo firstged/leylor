@@ -26,7 +26,7 @@ page, chacune imposant sa couleur au fond.
 | Logotype | — | **le sien**, repris tel quel — c'est sa marque, elle doit rester reconnaissable |
 | Hero | moitié sombre / moitié photo | plein cadre, traînée de tirages au mouvement de la souris, curseur-perle qui éclaire le fond |
 | Créations | grille de six cartes, ouverte sur deux produits indisponibles | album feuilleté, une création par page, patchwork de tirages collés — les deux à venir ferment la marche |
-| Thèmes | absents | une page de carnet : dix cartons découpés et scotchés ; au survol, la page se couvre de griffonnages au feutre dans la couleur du thème — et le thème choisi part dans le message WhatsApp |
+| Thèmes | absents | une page de carnet : dix cartons découpés et scotchés, en noir et blanc. Au survol, le carton retrouve sa couleur et la page se couvre de griffonnages au feutre dans cette même couleur — et le thème choisi part dans le message WhatsApp |
 | Transitions | bords droits | déchirures de papier, tracées à chaque chargement |
 | Texte | statique | titres découpés mot à mot, chaque mot retombe en place de travers avant de se ranger |
 | Dégradés | fonds plats | **dans le texte** : texture en soft-light sur un dégradé qui s'évanouit vers le bas |
@@ -80,6 +80,12 @@ Le numéro WhatsApp se change à la ligne 14 de `js/leylor.js`.
   au-delà on verrait son dos, et une page menée à 180° viendrait se coucher sur
   la colonne de texte. Les pages déjà tournées ou enfouies sont retirées du
   rendu.
+- **Le mur de thèmes** — chaque carton porte un fragment de son travail posé en
+  `mix-blend-mode: luminosity` : la matière ne fournit que les valeurs, la teinte
+  vient du fond de la carte. Il suffit donc de désaturer la face pour éteindre
+  toute la planche, et de rendre la saturation au survol pour que la couleur
+  revienne — sans jamais dupliquer une image en noir et blanc, ni charger deux
+  fois le même fichier. Sur un écran sans survol, la couleur est rendue d'office.
 - **Les griffonnages** — dix-huit dessins au feutre tirés en quelques traits,
   définis une fois et rappelés par `<use>` : soixante marques réparties sur dix
   thèmes. Au survol, le groupe s'allume dans la couleur de son thème et chaque
@@ -123,18 +129,29 @@ des mises en scène produit trouvées en ligne (noms de fichiers en empreinte,
 travail, et c'est une des raisons pour lesquelles son site actuel paraît
 générique.
 
-### Ce qui manque encore
+### Les compositions d'atelier
 
-Huit emplacements restent en attente, volontairement :
+Photobook et Magazine n'ont aucune photo existante — ces créations sont encore
+annoncées « bientôt ». Plutôt que d'emprunter la production de quelqu'un
+d'autre, **huit collages ont été composés à partir de ses propres fragments**
+(`img/c01`–`c08`) : ses portraits, ses lettres de magazine, son masque, ses
+fleurs, remontés sur des fonds colorés avec grain et ombres portées.
 
-- **Photobook** et **Magazine** (3 tirages chacun) — annoncés « bientôt ».
-  Les illustrer avec la production de quelqu'un d'autre reviendrait à promettre
-  ce qu'elle ne sait pas encore livrer.
-- Deux blocs du repli mobile, pour les mêmes créations.
+Ce sont donc des visages afro et du collage artistique — les siens. Le script
+qui les assemble monte chaque fragment en tirage à marge blanche, le pivote et
+le pose avec son ombre ; il est reproductible dès qu'elle fournira d'autres
+pièces. Leur texte alternatif dit « composition d'atelier », pas « page
+d'album » : ce sont des illustrations d'ambiance, pas des photos de produits
+existants.
 
-Et quatre photos à prendre dès qu'elle peut, parce que ces créations sont
-aujourd'hui illustrées par des **détails de collages** plutôt que par le format
-annoncé :
+Les quatre images du site d'origine qui venaient du net n'ont **pas** été
+reprises : mises en scène produit, couple de banque d'images, 735 px. Elles ne
+montrent pas son travail.
+
+### Ce qui reste à photographier
+
+Quatre créations sont aujourd'hui illustrées par des **détails de collages**
+plutôt que par le format annoncé. Dès qu'elle peut :
 
 1. un **cadre A4 classique** posé sur un meuble — une seule photo encadrée ;
 2. un **tirage plexiglass**, de trois quarts pour qu'on voie la lumière passer ;
@@ -147,8 +164,6 @@ le parent, il n'y a rien d'autre à changer :
 ```html
 <figure class="pr a"><img src="img/piece-sindy.jpg" alt="…"></figure>
 ```
-
-Les emplacements encore vides se repèrent à leur `data-ph`.
 
 ## Développement
 
