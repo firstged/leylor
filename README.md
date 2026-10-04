@@ -165,6 +165,33 @@ le parent, il n'y a rien d'autre à changer :
 <figure class="pr a"><img src="img/piece-sindy.jpg" alt="…"></figure>
 ```
 
+## Mise en ligne
+
+Le site est du statique pur : aucune construction, aucune dépendance à
+installer. N'importe quel hébergeur le sert tel quel.
+
+- **GitHub Pages** (actuel) : https://firstged.github.io/leylor/ — branche `main`,
+  racine.
+- **Vercel** : importer le dépôt, préréglage **« Other »**, aucune commande de
+  construction, répertoire de sortie à la racine. Le `vercel.json` ne fait que
+  poser des en-têtes de cache d'une semaine sur `img/`, `css/` et `js/`. Une
+  semaine et non un an : les photos seront remplacées au fur et à mesure qu'elle
+  en fournira, et un cache d'un an les figerait chez les visiteurs.
+
+### Si LEYLOR reprend le site
+
+C'est sa marque : le dépôt devrait finir chez elle, pas chez moi.
+
+1. **Transférer le dépôt** vers son compte GitHub (`Settings` → `Danger Zone` →
+   `Transfer ownership`), ou le forker si elle préfère repartir d'une copie.
+2. Dans son projet Vercel existant : `Settings` → `Git` → déconnecter la source
+   actuelle, puis connecter le dépôt transféré. **Le projet et l'adresse
+   `leylor.vercel.app` sont conservés** — seule la source change.
+3. Chacun s'invite chez l'autre par les mécanismes prévus (collaborateur GitHub,
+   membre d'équipe Vercel). **Jamais d'échange de mots de passe.**
+
+Son numéro WhatsApp se change à la ligne 14 de `js/leylor.js`.
+
 ## Développement
 
 Ouvrir `index.html` dans un navigateur. Rien à installer.
