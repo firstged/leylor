@@ -97,7 +97,7 @@
   /* Durée du comptage, puis temps de pose sur le mot
      entier. Une seule constante à changer pour régler
      le rythme : six techniques méritent d'être vues. */
-  var PRE_DUREE = 2600;
+  var PRE_DUREE = 3400;
   var PRE_POSE = 400;
 
   function initPreloader() {
