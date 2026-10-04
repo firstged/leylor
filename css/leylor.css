@@ -1,0 +1,1564 @@
+/* ══════════════════════════════════════════════
+   LEYLOR — feuille de style
+   L'atelier de découpage. Tout est papier : le fond
+   a du grain et de la fibre, les sections se
+   séparent par des déchirures jamais identiques,
+   les photos sont des tirages découpés et collés.
+   Le catalogue est un album qu'on feuillette.
+   ══════════════════════════════════════════════ */
+
+:root {
+  /* Nuit */
+  --nuit:     #15060B;
+  --nuit-2:   #230910;
+  --bordeaux: #330A14;
+  --grenat:   #6A1324;
+  --braise:   #A8223C;
+
+  /* Papier */
+  --papier:   #F6EEDF;
+  --papier-2: #EFE2CC;
+  --papier-3: #FCF8F0;
+  --sable:    #CDBFAA;
+  --sable-d:  #A8946F;
+  --encre:    #2A0D14;
+  --mute:     #7B6358;
+
+  /* Les univers. Plus saturés que des teintes de
+     marque : chaque création doit s'annoncer. */
+  --u0: #C9792E;
+  --u1: #3C7A62;
+  --u2: #3A5F9E;
+  --u3: #A8376B;
+  --u4: #8E1B2E;
+  --u5: #C85A2A;
+
+  --display: "Italiana", "Didot", Georgia, serif;
+  --hand:    "Parisienne", "Segoe Script", cursive;
+  --body:    "Jost", -apple-system, "Segoe UI", Helvetica, sans-serif;
+
+  --ease:    cubic-bezier(.22, 1, .36, 1);
+  --ease-io: cubic-bezier(.76, 0, .24, 1);
+
+  --gut:     clamp(20px, 5.4vw, 92px);
+  --nav-h:   64px;
+
+  /* ── Textures ──
+     Le grain casse l'aplat ; la fibre, très étirée
+     en largeur, imite les filaments d'un papier fait
+     main. Les deux sont tuilées, donc légères. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)' opacity='.55'/%3E%3C/svg%3E");
+  --fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006 .62' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='320' height='320' filter='url(%23f)' opacity='.5'/%3E%3C/svg%3E");
+  /* Trame demi-teinte, deux points en quinconce. Une
+     tuile SVG de 8 px et non un dégradé radial de 4 :
+     le dégradé obligeait le rasteriseur à recalculer
+     cent trente mille tuiles par plein écran, et la
+     page s'effondrait sur une machine modeste. */
+  --trame: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='1.35' fill='%2315060B' opacity='.3'/%3E%3Ccircle cx='6' cy='6' r='1.35' fill='%2315060B' opacity='.3'/%3E%3C/svg%3E");
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--papier);
+  color: var(--encre);
+  font-family: var(--body);
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body.is-locked { overflow: hidden; height: 100vh; }
+
+svg, canvas { display: block; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--braise); outline-offset: 4px; border-radius: 2px; }
+::selection { background: var(--grenat); color: var(--papier); }
+.is-dark ::selection { background: var(--sable); color: var(--nuit); }
+
+.defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+
+/* ══════════ LE LOGOTYPE ══════════
+   Six lettres tracées, celles de la marque. Le fond
+   n'est jamais reconstruit : les chemins sont définis
+   une fois et rappelés par <use>. */
+
+.logo { width: 100%; height: auto; overflow: visible; }
+.logo .lt { fill: currentColor; }
+
+
+/* ══════════ PAPIER ET NUIT ══════════ */
+
+.on-paper {
+  position: relative;
+  background-color: var(--papier);
+  background-image: var(--fibre), var(--grain);
+  background-size: 320px 320px, 200px 200px;
+  background-blend-mode: soft-light, multiply;
+}
+.is-dark {
+  position: relative;
+  background-color: var(--nuit);
+  background-image: var(--grain);
+  background-size: 200px 200px;
+  background-blend-mode: overlay;
+}
+
+/* ── Déchirures ──
+   Le bord est tracé au chargement par le script :
+   une marche aléatoire, jamais deux fois la même.
+   La feuille du dessus déborde sur celle du dessous. */
+.tear {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 4;
+  width: 100%;
+  height: clamp(26px, 3.6vw, 58px);
+  transform: translateY(-98%);
+  pointer-events: none;
+  color: var(--papier);
+}
+.tear[data-tear="down"] { color: var(--nuit); }
+.tear svg { width: 100%; height: 100%; }
+.album .tear { color: #2A1206; }
+.temo .tear { color: var(--bordeaux); }
+.foot .tear { color: var(--nuit); }
+
+
+/* ══════════ TYPOGRAPHIE ══════════ */
+
+.scr {
+  font-family: var(--hand);
+  text-transform: none;
+  letter-spacing: 0;
+  /* Parisienne a des jambages profonds : sans cette
+     marge les descendantes se font couper. */
+  padding-bottom: .12em;
+  display: inline-block;
+}
+
+.eyebrow {
+  margin: 0 0 1.4rem;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+.is-dark .eyebrow { color: rgba(246, 238, 223, .54); }
+
+.h2 {
+  margin: 0;
+  font-family: var(--display);
+  font-size: clamp(36px, 5.4vw, 78px);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+}
+
+.line { display: block; overflow: hidden; }
+.line > span { display: block; }
+
+/* ── Dégradé dans le texte ──
+   Le dégradé n'est pas derrière les lettres, il est
+   dedans : une texture en soft-light par-dessus un
+   dégradé vertical qui s'évanouit vers le bas. */
+.grad {
+  display: inline-block;
+  color: transparent;
+  background-image: var(--fibre), linear-gradient(to bottom, var(--g1) 46%, var(--g2) 100%);
+  background-size: 220px 220px, 100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-blend-mode: soft-light, normal;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.grad-hero  { --g1: #FDF8EE; --g2: rgba(205, 191, 170, .28); }
+.grad-manif { --g1: #6A1324; --g2: rgba(168, 34, 60, .22); }
+.grad-quote { --g1: #FBF3E4; --g2: rgba(205, 191, 170, .26); }
+.grad-album { --g1: #FDF8EE; --g2: rgba(253, 248, 238, .26); }
+
+
+/* ══════════ BOUTONS ══════════ */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 30px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  overflow: hidden;
+  transition: background .5s var(--ease), color .5s var(--ease), border-color .5s var(--ease);
+}
+.btn-fill  { background: var(--grenat); color: var(--papier); }
+.btn-fill:hover  { background: var(--braise); }
+.btn-line  { border-color: rgba(42, 13, 20, .3); color: inherit; }
+.btn-line:hover  { border-color: currentColor; background: rgba(42, 13, 20, .06); }
+.is-dark .btn-line { border-color: rgba(246, 238, 223, .34); color: var(--papier); }
+.is-dark .btn-line:hover { border-color: var(--papier); background: rgba(246, 238, 223, .1); }
+
+.lk { border-bottom: 1px solid currentColor; color: var(--grenat); }
+
+/* Effet de remplacement : la lettre du bas remonte
+   remplacer celle du haut, décalée de 24 ms. La
+   cellule vaut exactement une ligne, sinon le mot
+   s'affiche en double au lieu d'être masqué. */
+.roll-c {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  height: 1.3em;
+  line-height: 1.3em;
+}
+.roll-i { display: block; transition: transform .62s var(--ease); }
+.roll-i > span { display: block; height: 1.3em; line-height: 1.3em; }
+.btn:hover .roll-i, a:hover > [data-roll] .roll-i { transform: translateY(-50%); }
+
+
+/* ══════════ TIRAGES ET EMPLACEMENTS ══════════
+   Chaque .ph tient la place d'une photo à venir.
+   Pour brancher la vraie image, remplacer le bloc
+   par <img src="img/…" alt="…"> : le cadrage est
+   porté par le parent, rien d'autre à changer. */
+
+.ph {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--pa, #5A2230);
+  background-image:
+    var(--trame),
+    radial-gradient(84% 64% at 26% 16%, rgba(255, 226, 196, .44), transparent 62%),
+    radial-gradient(76% 66% at 85% 92%, rgba(0, 0, 0, .48), transparent 64%),
+    linear-gradient(150deg, rgba(255, 255, 255, .1), rgba(0, 0, 0, .34));
+  background-size: 8px 8px, auto, auto, auto;
+  overflow: hidden;
+}
+.ph::after {
+  content: "photo " attr(data-ph);
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 8px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .5);
+}
+
+/* Teintes : la traînée balaie toute la famille. */
+.trail .tr:nth-child(6n+1) .ph { --pa: var(--u4); }
+.trail .tr:nth-child(6n+2) .ph { --pa: var(--u0); }
+.trail .tr:nth-child(6n+3) .ph { --pa: var(--u1); }
+.trail .tr:nth-child(6n+4) .ph { --pa: var(--u2); }
+.trail .tr:nth-child(6n+5) .ph { --pa: var(--u3); }
+.trail .tr:nth-child(6n+6) .ph { --pa: var(--u5); }
+
+.leaf[data-u="0"] { --pc: var(--u0); --pd: #2A1206; }
+.leaf[data-u="1"] { --pc: var(--u1); --pd: #081A14; }
+.leaf[data-u="2"] { --pc: var(--u2); --pd: #07101F; }
+.leaf[data-u="3"] { --pc: var(--u3); --pd: #250818; }
+.leaf[data-u="4"] { --pc: var(--u4); --pd: #1C060C; }
+.leaf[data-u="5"] { --pc: var(--u5); --pd: #2A0E05; }
+.leaf .a .ph { --pa: var(--pc); }
+.leaf .b .ph { --pa: var(--pd); }
+.leaf .c .ph { --pa: var(--pc); filter: saturate(.7) brightness(1.1); }
+
+.uni-item[data-u="0"] { --pc: var(--u0); --pd: #2A1206; }
+.uni-item[data-u="1"] { --pc: var(--u1); --pd: #081A14; }
+.uni-item[data-u="2"] { --pc: var(--u2); --pd: #07101F; }
+.uni-item[data-u="3"] { --pc: var(--u3); --pd: #250818; }
+.uni-item[data-u="4"] { --pc: var(--u4); --pd: #1C060C; }
+.uni-item[data-u="5"] { --pc: var(--u5); --pd: #2A0E05; }
+
+
+/* ══════════ PRÉCHARGEMENT ══════════
+   Six lettres, six techniques d'atelier. */
+
+.pre {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background-color: var(--nuit);
+  background-image: var(--grain);
+  background-size: 200px 200px;
+  transition: opacity .8s var(--ease), visibility .8s;
+}
+.pre.is-out { opacity: 0; visibility: hidden; }
+
+.pre-in { width: min(860px, 82vw); }
+
+.logo-pre { color: var(--papier); }
+.logo-pre .lt { opacity: 0; }
+.logo-pre .lt.is-on { opacity: 1; }
+.logo-pre .nk { fill: currentColor; }
+.logo-pre .ln { fill: none; stroke: currentColor; stroke-width: 3; vector-effect: non-scaling-stroke; }
+
+/* 01 — tracée : le contour se dessine, l'encre suit */
+[data-cut="trace"] .ln { stroke-dasharray: 1; stroke-dashoffset: 1; }
+[data-cut="trace"].is-on .ln { animation: ltTrace 1s var(--ease) forwards; }
+[data-cut="trace"] .nk { opacity: 0; }
+[data-cut="trace"].is-on .nk { animation: ltInk .5s var(--ease) .55s forwards; }
+@keyframes ltTrace { to { stroke-dashoffset: 0; } }
+@keyframes ltInk { to { opacity: 1; } }
+
+/* 02 — découpée : le ciseau passe de gauche à droite */
+[data-cut="coupe"] .nk { clip-path: inset(0 100% 0 0); }
+[data-cut="coupe"].is-on .nk { animation: ltCut .62s var(--ease-io) forwards; }
+@keyframes ltCut {
+  from { clip-path: inset(0 100% 0 0); transform: translateX(-14px) rotate(-3deg); }
+  to   { clip-path: inset(0 0 0 0);    transform: none; }
+}
+
+/* 03 — patchwork : elle s'assemble en trois morceaux */
+[data-cut="patch"] .nk { clip-path: inset(0 100% 0 0); }
+[data-cut="patch"].is-on .nk { animation: ltPatch .72s steps(3, end) forwards; }
+@keyframes ltPatch {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+/* 04 — tamponnée : l'encre s'écrase puis se fixe */
+[data-cut="tampon"].is-on .nk { animation: ltStamp .5s cubic-bezier(.3, 1.5, .5, 1) forwards; }
+@keyframes ltStamp {
+  from { opacity: 0; transform: scale(1.5) rotate(-5deg); filter: blur(7px); }
+  60%  { opacity: 1; transform: scale(.95) rotate(1deg);  filter: blur(0); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+
+/* 05 — pivotée : la feuille se retourne vers nous */
+[data-cut="pivot"] { perspective: 700px; }
+[data-cut="pivot"].is-on .nk { animation: ltFlip .72s var(--ease) forwards; transform-origin: 50% 50%; }
+@keyframes ltFlip {
+  from { opacity: 0; transform: rotateY(-96deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* 06 — déboîtée : trois tirages mal calés se recalent */
+[data-cut="deboite"] .gh { opacity: 0; }
+[data-cut="deboite"] .gh-a { fill: var(--u0); }
+[data-cut="deboite"] .gh-b { fill: var(--u2); }
+[data-cut="deboite"].is-on .gh-a { animation: ltGhA .8s var(--ease) forwards; }
+[data-cut="deboite"].is-on .gh-b { animation: ltGhB .8s var(--ease) forwards; }
+[data-cut="deboite"].is-on .nk  { animation: ltInk .5s var(--ease) .26s forwards; }
+[data-cut="deboite"] .nk { opacity: 0; }
+@keyframes ltGhA {
+  from { opacity: .85; transform: translate(-26px, -12px); }
+  to   { opacity: 0;   transform: none; }
+}
+@keyframes ltGhB {
+  from { opacity: .85; transform: translate(24px, 14px); }
+  to   { opacity: 0;   transform: none; }
+}
+
+/* Les lettres se tracent dans le même ordre que le
+   mot ; le pourcentage les fait entrer l'une après
+   l'autre, donc aucun décalage n'est écrit ici. */
+
+.pre-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 26px 0 0;
+  font-size: 10px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .42);
+}
+.pre-cut { font-family: var(--hand); font-size: 17px; letter-spacing: 0; text-transform: none; }
+.pre-foot i { font-style: normal; }
+.pre-foot i::after { content: " %"; }
+
+
+/* ══════════ CURSEUR-PERLE ══════════ */
+
+.cur { position: fixed; inset: 0; z-index: 280; pointer-events: none; display: none; }
+body.has-pearl .cur { display: block; }
+body.has-pearl { cursor: none; }
+body.has-pearl a, body.has-pearl button, body.has-pearl label,
+body.has-pearl input, body.has-pearl textarea { cursor: none; }
+
+.cur-pearl, .cur-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  will-change: transform;
+}
+.cur-pearl {
+  width: 13px;
+  height: 13px;
+  margin: -6.5px 0 0 -6.5px;
+  background: radial-gradient(circle at 33% 28%, #fff 0%, #FBF3E7 24%, #D9C3AB 56%, #A07C64 84%, #6E4F3E 100%);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .45), inset 0 -2px 4px rgba(0, 0, 0, .22);
+  transition: width .4s var(--ease), height .4s var(--ease), margin .4s var(--ease), opacity .4s var(--ease);
+}
+body.cur-hot .cur-pearl { width: 40px; height: 40px; margin: -20px 0 0 -20px; opacity: .9; }
+
+.cur-glow {
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  background: radial-gradient(circle, rgba(255, 214, 170, .18), rgba(255, 180, 140, .06) 42%, transparent 66%);
+  mix-blend-mode: screen;
+  transition: opacity .6s var(--ease);
+}
+body.on-light .cur-glow { opacity: 0; }
+
+
+/* ══════════ NAVIGATION ══════════ */
+
+.nav {
+  position: fixed;
+  z-index: 200;
+  top: 18px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: clamp(18px, 3vw, 46px);
+  padding: 10px 12px 10px 24px;
+  border: 1px solid rgba(246, 238, 223, .14);
+  border-radius: 999px;
+  background: rgba(21, 6, 11, .6);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  color: var(--papier);
+  transform: translate(-50%, -140%);
+  opacity: 0;
+  transition: transform .8s var(--ease), opacity .6s var(--ease),
+              background .6s var(--ease), border-color .6s var(--ease), color .6s var(--ease);
+}
+.nav.is-on { transform: translate(-50%, 0); opacity: 1; }
+body.on-light .nav {
+  background: rgba(252, 248, 240, .78);
+  border-color: rgba(42, 13, 20, .14);
+  color: var(--encre);
+}
+
+.nav-mark { display: block; width: 92px; }
+.nav-mark .logo { display: block; }
+
+.nav-links { display: flex; align-items: center; gap: clamp(14px, 2.2vw, 30px); }
+.nav-links a {
+  position: relative;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  opacity: .72;
+  transition: opacity .4s var(--ease);
+}
+.nav-links a:hover, .nav-links a.is-here { opacity: 1; }
+.nav-links a:not(.nav-cta)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .5s var(--ease);
+}
+.nav-links a:not(.nav-cta):hover::after,
+.nav-links a:not(.nav-cta).is-here::after { transform: scaleX(1); }
+
+.nav-cta {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: var(--grenat);
+  color: var(--papier);
+  opacity: 1;
+  transition: background .4s var(--ease);
+}
+.nav-cta:hover { background: var(--braise); }
+
+.prog { position: fixed; z-index: 201; top: 0; left: 0; width: 100%; height: 2px; }
+.prog i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--braise);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+
+/* ══════════ HERO ══════════ */
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--nav-h) + 40px) var(--gut) 150px;
+  background-color: var(--nuit);
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--papier);
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  z-index: -2;
+  background:
+    radial-gradient(52% 46% at 50% 36%, rgba(168, 34, 60, .34), transparent 68%),
+    radial-gradient(40% 38% at 16% 88%, rgba(106, 19, 36, .32), transparent 70%),
+    radial-gradient(34% 32% at 86% 12%, rgba(201, 121, 46, .16), transparent 72%);
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .4;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 200px 200px;
+}
+
+/* ── Traînée de tirages ──
+   Les douze vignettes vivent en permanence dans le
+   DOM ; le script les repose sous le curseur l'une
+   après l'autre. Rien n'est créé ni détruit pendant
+   le mouvement. */
+.trail { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.tr {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: clamp(130px, 13vw, 210px);
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  padding: 8px 8px 24px;
+  background: var(--papier-3);
+  opacity: 0;
+  will-change: transform, opacity;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .55);
+}
+.tr:nth-child(3n+2) { aspect-ratio: 4 / 3; width: clamp(160px, 16vw, 250px); }
+.tr:nth-child(4n+3) { aspect-ratio: 1 / 1; }
+
+.hero-in { position: relative; z-index: 2; max-width: 1120px; text-align: center; pointer-events: none; }
+.hero-in a { pointer-events: auto; }
+
+.hero-t {
+  margin: 0 0 1.6rem;
+  font-family: var(--display);
+  font-weight: 400;
+  /* Chaque vers tient sur une ligne : un retour à la
+     ligne décidé par le navigateur n'est pas une
+     césure, c'est un accident. */
+  font-size: clamp(38px, 8vw, 118px);
+  line-height: .94;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+.hero-t .scr { font-size: 1.12em; color: var(--sable); line-height: 1.08; }
+
+.hero-sub {
+  max-width: 46ch;
+  margin: 0 auto 2.6rem;
+  font-size: clamp(15px, 1.5vw, 18px);
+  color: rgba(246, 238, 223, .74);
+}
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+
+.hero-meta {
+  position: absolute;
+  z-index: 2;
+  left: var(--gut);
+  bottom: 46px;
+  display: flex;
+  gap: clamp(26px, 4vw, 58px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hero-meta b {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(24px, 2.6vw, 36px);
+  font-weight: 400;
+  line-height: 1;
+}
+.hero-meta span {
+  display: block;
+  margin-top: 6px;
+  font-size: 10px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .5);
+}
+
+.hero-hint {
+  position: absolute;
+  z-index: 2;
+  right: var(--gut);
+  bottom: 52px;
+  margin: 0;
+  font-size: 10px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .44);
+  animation: pulse 3.4s ease-in-out infinite;
+  transition: opacity .6s var(--ease);
+}
+.hero-hint.is-gone { opacity: 0; }
+.hint-touch { display: none; }
+@keyframes pulse { 0%, 100% { opacity: .44; } 50% { opacity: .9; } }
+
+
+/* ══════════ MANIFESTE ══════════ */
+
+.manif { padding: clamp(120px, 17vw, 240px) var(--gut); }
+.manif-t {
+  margin: 0 auto;
+  font-family: var(--display);
+  font-size: clamp(22px, 5vw, 72px);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -.01em;
+  color: var(--encre);
+  text-align: center;
+  white-space: nowrap;
+}
+.manif-t .dim { opacity: .4; }
+.manif-t .scr { font-size: 1.16em; color: var(--braise); }
+
+
+/* ══════════ L'ALBUM ══════════
+   Six créations, six pages. La position dans la
+   piste devient un curseur f : sa partie entière
+   désigne la page du dessus, et chaque fond se
+   dévoile d'autant plus que f est proche de son
+   indice — deux fonds se croisent, jamais six. */
+
+.album { position: relative; color: var(--papier); }
+.album-track { position: relative; height: calc(var(--n) * 112vh); }
+
+.album-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.album-bg { position: absolute; inset: 0; z-index: 0; background: var(--nuit); }
+.album-bg i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background:
+    radial-gradient(112% 82% at 74% 10%, var(--c), transparent 62%),
+    radial-gradient(74% 62% at 8% 98%, var(--d), transparent 70%),
+    linear-gradient(168deg, var(--d), #070204 88%);
+}
+.album-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: .38;
+  mix-blend-mode: overlay;
+  background-image: var(--grain);
+  background-size: 200px 200px;
+}
+
+.album-label {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--nav-h) + 34px);
+  left: var(--gut);
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .5);
+}
+.album-h {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--nav-h) + 56px);
+  left: var(--gut);
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(21px, 2.3vw, 34px);
+  line-height: 1.04;
+  white-space: nowrap;
+}
+
+/* ── Le livre ──
+   Les pages sont posées à l'envers dans le DOM : la
+   première se retrouve sur le dessus de la pile sans
+   qu'aucun z-index ne soit écrit. */
+.book {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  right: clamp(18px, 5vw, 118px);
+  width: clamp(270px, 39vw, 560px);
+  height: clamp(330px, 64vh, 680px);
+  transform: translateY(-50%);
+  perspective: 2200px;
+}
+.book-edge {
+  position: absolute;
+  left: -14px;
+  top: 1.5%;
+  width: 14px;
+  height: 97%;
+  background: linear-gradient(90deg, rgba(0, 0, 0, .05), rgba(0, 0, 0, .42));
+  box-shadow: -2px 0 20px rgba(0, 0, 0, .4);
+}
+
+/* La page se lève jusqu'au profil puis s'efface : son
+   dos n'est jamais vu. Pas de face arrière, donc pas
+   de preserve-3d ni de backface-visibility — autant de
+   calques que le compositeur n'a plus à tenir. */
+.leaf {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  transform-origin: left center;
+  will-change: transform;
+}
+.leaf-face {
+  position: absolute;
+  inset: 0;
+  opacity: var(--o, 1);
+  box-shadow: 0 26px 60px rgba(0, 0, 0, .46);
+}
+
+/* Les pages déjà tournées, et celles encore enfouies
+   sous la pile, ne sont jamais vues : les peindre
+   coûte six plein-écrans par image pour rien. */
+.leaf.is-off { visibility: hidden; }
+/* L'ombre de pliure : elle se charge à mesure que la
+   page se lève, comme la lumière qui la quitte. */
+.leaf-shade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--t, 0) * .85 * var(--o, 1));
+  background: linear-gradient(90deg, rgba(0, 0, 0, .66), rgba(0, 0, 0, .06) 42%, transparent 70%);
+}
+
+.collage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background-color: var(--papier);
+  background-image: var(--fibre), var(--grain);
+  background-size: 320px 320px, 200px 200px;
+  background-blend-mode: soft-light, multiply;
+}
+/* Les tirages sont collés, pas alignés : bord blanc,
+   ombre portée, et jamais tout à fait droits. */
+.pr {
+  position: absolute;
+  margin: 0;
+  padding: 8px 8px 22px;
+  background: var(--papier-3);
+  box-shadow: 0 12px 28px rgba(20, 6, 11, .34);
+}
+.pr.a { left: 5%;  top: 7%;    width: 56%; height: 45%; transform: rotate(-3.4deg); }
+.pr.b { right: 6%; top: 27%;   width: 45%; height: 41%; transform: rotate(2.8deg); }
+.pr.c { left: 14%; bottom: 7%; width: 52%; height: 37%; transform: rotate(1.7deg); }
+
+.tape {
+  position: absolute;
+  width: 92px;
+  height: 26px;
+  background: linear-gradient(180deg, rgba(246, 238, 223, .62), rgba(205, 191, 170, .48));
+  box-shadow: 0 2px 5px rgba(20, 6, 11, .16);
+}
+.tape.t1 { left: 2%;  top: 4%;  transform: rotate(-26deg); }
+.tape.t2 { right: 4%; top: 24%; transform: rotate(22deg); }
+
+.cap {
+  position: absolute;
+  right: 7%;
+  bottom: 2.5%;
+  margin: 0;
+  font-family: var(--hand);
+  font-size: clamp(15px, 1.5vw, 21px);
+  color: var(--grenat);
+  transform: rotate(-2deg);
+}
+
+/* ── Le texte ── */
+.album-copy {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: var(--gut);
+  width: min(420px, 40vw);
+  transform: translateY(-50%);
+}
+.uni-item {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translateY(-46%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .55s var(--ease), transform .8s var(--ease), visibility .55s;
+}
+.uni-item.is-on {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%);
+}
+
+.uni-n {
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-size: clamp(40px, 4.6vw, 68px);
+  line-height: 1;
+  color: rgba(246, 238, 223, .3);
+}
+.uni-item h3 {
+  margin: 0 0 16px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(32px, 4.2vw, 62px);
+  line-height: 1.03;
+  letter-spacing: -.01em;
+}
+.uni-d {
+  margin: 0 0 18px;
+  font-size: clamp(14px, 1.3vw, 16px);
+  color: rgba(246, 238, 223, .78);
+}
+.uni-tags { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 22px; }
+.uni-tags span {
+  padding: 5px 12px;
+  border: 1px solid rgba(246, 238, 223, .26);
+  border-radius: 999px;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .8);
+}
+.uni-p {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 0 0 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(246, 238, 223, .2);
+}
+.uni-p b { font-family: var(--display); font-size: clamp(20px, 2.2vw, 30px); font-weight: 400; }
+.uni-p span {
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .54);
+}
+.uni-item.is-soon .uni-n, .uni-item.is-soon h3 { opacity: .78; }
+
+/* Visible seulement là où le livre ne l'est pas : sans
+   lui, un visiteur au téléphone ne verrait aucune photo
+   du catalogue. Il reprend le premier tirage de la page,
+   donc rien de plus à fournir. */
+.uni-mob { display: none; }
+.uni-mob .ph { --pa: var(--pc); }
+
+/* ── L'index ── */
+.album-dots {
+  position: absolute;
+  z-index: 3;
+  right: clamp(14px, 2vw, 30px);
+  bottom: clamp(20px, 4vh, 44px);
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.album-dots button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 6px 0;
+  width: 100%;
+}
+.album-dots span {
+  font-size: 9px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .62);
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+  white-space: nowrap;
+}
+.album-dots i {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: rgba(246, 238, 223, .34);
+  transition: width .5s var(--ease), background .5s var(--ease);
+}
+.album-dots button:hover span, .album-dots li.is-on span { opacity: 1; transform: none; }
+.album-dots li.is-on i { width: 46px; background: var(--papier); }
+
+
+/* ══════════ UN THÈME PAR HISTOIRE ══════════ */
+
+.themes { padding: clamp(100px, 14vw, 180px) var(--gut) clamp(80px, 11vw, 140px); }
+.themes-head, .patch, .themes-foot { position: relative; z-index: 1; }
+.themes-head { max-width: 1240px; margin: 0 auto clamp(44px, 6vw, 76px); }
+.themes-head .h2 { max-width: 16ch; }
+.themes-lead { max-width: 56ch; margin: 1.6rem 0 0; color: var(--mute); }
+
+/* ── Les griffonnages ──
+   Ils tachent la page au survol d'un thème, tracés au
+   feutre dans la couleur de ce thème. Le trait se
+   dessine ; il n'apparaît pas d'un bloc. */
+.dood-layer { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+.dood { position: absolute; inset: 0; opacity: 0; transition: opacity .55s var(--ease); }
+.dood.is-on { opacity: 1; }
+.dd {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: calc(var(--s) * 94px);
+  height: calc(var(--s) * 94px);
+  transform: translate(-50%, -50%) rotate(var(--r));
+  overflow: visible;
+}
+.dd use {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: .48;
+}
+.dood.is-on .dd use {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset .8s var(--ease);
+  transition-delay: calc(var(--i) * 95ms);
+}
+
+/* ── Le mur ──
+   Chaque thème est un carton découpé, posé sur une
+   marge blanche et retenu par deux bouts de ruban.
+   Tailles inégales, aucun tout à fait droit. */
+.patch {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 22px;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+.patch li { display: flex; }
+.patch li.pt-xl { grid-row: span 2; }
+.patch li.pt-w  { grid-column: span 2; }
+
+.pt {
+  position: relative;
+  flex: 1;
+  display: block;
+  padding: 11px;
+  background: var(--papier-3);
+  box-shadow: 0 10px 26px rgba(20, 6, 11, .17);
+  transition: transform .55s var(--ease), box-shadow .55s var(--ease);
+}
+.patch li:nth-child(odd) .pt  { transform: rotate(-1.3deg); }
+.patch li:nth-child(even) .pt { transform: rotate(1deg); }
+.patch li:nth-child(3n) .pt   { transform: rotate(-.5deg); }
+.pt:hover, .pt:focus-visible {
+  transform: rotate(0) translateY(-7px);
+  box-shadow: 0 24px 50px rgba(20, 6, 11, .3);
+}
+
+.pt-face {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  min-height: 136px;
+  padding: 18px;
+  background-color: var(--c);
+  background-image: var(--trame), linear-gradient(158deg, rgba(255, 255, 255, .22), rgba(0, 0, 0, .34));
+  background-size: 8px 8px, auto;
+  color: var(--papier);
+}
+.pt-xl .pt-face { min-height: 306px; }
+.pt-face b {
+  font-family: var(--display);
+  font-size: clamp(21px, 2.2vw, 32px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+.pt-face em {
+  margin-top: 4px;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  opacity: .8;
+}
+
+/* Le ruban déborde du carton : il le tient à la page. */
+.tp {
+  position: absolute;
+  z-index: 2;
+  width: 74px;
+  height: 21px;
+  background: linear-gradient(178deg, rgba(246, 238, 223, .74), rgba(205, 191, 170, .58));
+  box-shadow: 0 1px 3px rgba(20, 6, 11, .16);
+}
+.tp-1 { left: -17px; top: 14px; transform: rotate(-40deg); }
+.tp-2 { right: -17px; bottom: 16px; transform: rotate(-40deg); }
+
+.themes-foot {
+  max-width: 1240px;
+  margin: clamp(34px, 5vw, 56px) auto 0;
+  font-size: clamp(16px, 1.8vw, 21px);
+  font-family: var(--display);
+}
+
+
+/* ══════════ ATELIER ══════════ */
+
+.proc { padding: clamp(100px, 14vw, 190px) var(--gut) clamp(90px, 12vw, 160px); }
+.proc-head { max-width: 1240px; margin: 0 auto clamp(56px, 8vw, 110px); }
+.proc-head .h2 { max-width: 15ch; }
+
+.proc-body { position: relative; max-width: 1080px; margin: 0 auto; }
+
+/* Un seul tracé relie les quatre gestes. Sa largeur
+   est en pourcentage, pas en pixels : un filet fixe
+   au milieu n'aurait aucun rapport avec les étapes
+   qu'il est censé relier. */
+.proc-thread {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34%;
+  height: 100%;
+  transform: translateX(-50%);
+  overflow: visible;
+  pointer-events: none;
+}
+.proc-thread path {
+  fill: none;
+  stroke-linecap: round;
+  /* Le tracé est étiré sans conserver ses proportions :
+     sans cela l'épaisseur du trait s'étirerait avec. */
+  vector-effect: non-scaling-stroke;
+}
+/* Le tracé de fond est la route prévue, en pointillé
+   comme sur une carte ; l'encre est le chemin déjà
+   parcouru par l'avion. */
+.thread-bed { stroke: rgba(42, 13, 20, .22); stroke-width: 1.4; stroke-dasharray: 2 9; }
+.thread-ink { stroke: var(--grenat); stroke-width: 2; stroke-dasharray: 1; stroke-dashoffset: 1; }
+
+/* L'avion est posé hors du SVG : celui-ci est étiré
+   sans conserver ses proportions et le déformerait.
+   Le script le place en pixels le long du tracé. */
+.plane {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  width: clamp(26px, 3vw, 40px);
+  height: clamp(26px, 3vw, 40px);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity .5s var(--ease);
+}
+.plane.is-on { opacity: 1; }
+.plane svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 3px 5px rgba(20, 6, 11, .3)); }
+.pl-a { fill: var(--papier-3); }
+.pl-b { fill: var(--sable); }
+.plane path { stroke: var(--grenat); stroke-width: 1.6; stroke-linejoin: round; }
+
+.proc-list { position: relative; margin: 0; padding: 0; list-style: none; display: grid; gap: clamp(56px, 9vw, 130px); }
+.step { position: relative; width: min(400px, 44%); }
+.step:nth-child(odd)  { justify-self: start; text-align: right; }
+.step:nth-child(even) { justify-self: end; }
+
+.step-n {
+  margin: 0 0 10px;
+  font-family: var(--display);
+  font-size: clamp(30px, 3.4vw, 46px);
+  line-height: 1;
+  color: var(--sable-d);
+}
+.step h3 {
+  margin: 0 0 12px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.1;
+}
+.step p { margin: 0; font-size: 15px; color: var(--mute); }
+
+
+/* ══════════ AVIS ══════════ */
+
+.temo {
+  position: relative;
+  padding: clamp(110px, 16vw, 200px) var(--gut);
+  background-color: var(--bordeaux);
+  color: var(--papier);
+  overflow: hidden;
+}
+.temo::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(62% 70% at 50% 0%, rgba(168, 34, 60, .52), transparent 70%);
+}
+.temo-in { position: relative; max-width: 940px; margin: 0 auto; text-align: center; }
+
+.temo-stage { position: relative; min-height: clamp(220px, 28vh, 300px); margin-top: 10px; }
+.quote {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition: opacity .7s var(--ease), transform .9s var(--ease), visibility .7s;
+}
+.quote.is-on { opacity: 1; visibility: visible; transform: none; }
+.quote p {
+  margin: 0 0 30px;
+  font-family: var(--display);
+  font-size: clamp(25px, 3.6vw, 50px);
+  line-height: 1.22;
+  letter-spacing: -.01em;
+}
+.quote footer { display: flex; flex-direction: column; gap: 5px; }
+.quote footer b {
+  font-family: var(--hand);
+  font-size: clamp(19px, 2vw, 26px);
+  font-weight: 400;
+  color: var(--sable);
+}
+.quote footer span {
+  font-size: 10px;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .5);
+}
+
+.temo-dots { display: flex; justify-content: center; gap: 10px; margin: 44px 0 0; padding: 0; list-style: none; }
+.temo-dots button { padding: 8px; }
+.temo-dots i {
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: rgba(246, 238, 223, .32);
+  transition: background .4s var(--ease), width .4s var(--ease);
+}
+.temo-dots li.is-on i { width: 48px; background: var(--papier); }
+
+
+/* ══════════ BON DE COMMANDE ══════════ */
+
+.cmd { padding: clamp(100px, 14vw, 180px) var(--gut); }
+.cmd-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, .82fr) minmax(0, 1fr);
+  gap: clamp(40px, 6vw, 96px);
+  align-items: start;
+}
+
+/* Le bon est plus long que la colonne qui l'accompagne :
+   sans adhérence, la promesse disparaît dès qu'on
+   commence à écrire. */
+.cmd-side { position: sticky; top: calc(var(--nav-h) + 36px); }
+.cmd-side .h2 { max-width: 11ch; margin-bottom: 1.8rem; }
+.cmd-promise {
+  margin: 0 0 2.4rem;
+  padding: 22px 24px;
+  background: var(--sable);
+  color: var(--encre);
+  font-size: 15px;
+}
+.cmd-promise b { display: block; margin-bottom: 5px; font-weight: 500; }
+
+.cmd-points { margin: 0; padding: 0; list-style: none; }
+.cmd-points li { padding: 18px 0; border-top: 1px solid rgba(42, 13, 20, .14); }
+.cmd-points li:last-child { border-bottom: 1px solid rgba(42, 13, 20, .14); }
+.cmd-points b { display: block; font-weight: 500; font-size: 15px; }
+.cmd-points span { display: block; font-size: 14px; color: var(--mute); }
+
+/* ── La lettre ── */
+.cmd-form {
+  padding: clamp(28px, 4vw, 52px);
+  background-color: var(--papier-3);
+  background-image: var(--fibre);
+  background-size: 320px 320px;
+  background-blend-mode: multiply;
+  border: 1px solid rgba(42, 13, 20, .14);
+  box-shadow: 0 30px 80px rgba(42, 13, 20, .09);
+}
+.form-kicker {
+  margin: 0 0 14px;
+  font-size: 10px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--mute);
+  text-align: center;
+}
+.form-title { margin: 0; text-align: center; }
+.form-title .scr { font-size: clamp(34px, 4.4vw, 54px); color: var(--grenat); }
+.form-note {
+  margin: 2px 0 30px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid rgba(42, 13, 20, .14);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--mute);
+  text-align: center;
+}
+
+.f-row { margin: 0 0 24px; padding: 0; border: 0; }
+.f-row legend { padding: 0; margin-bottom: 12px; font-family: var(--display); font-size: 19px; }
+.f-row.is-off { display: none; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 9px; }
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 17px;
+  border: 1px solid rgba(42, 13, 20, .22);
+  border-radius: 999px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .35s var(--ease), border-color .35s var(--ease), color .35s var(--ease);
+}
+.chip-sm { padding: 8px 14px; font-size: 13px; }
+.chip input { position: absolute; opacity: 0; width: 0; height: 0; }
+.chip i { font-style: normal; font-size: 11px; letter-spacing: .08em; color: var(--mute); }
+.chip:hover { border-color: rgba(42, 13, 20, .48); }
+/* .is-sel double :has() — les WebView Android anciens
+   ne connaissent pas le second, et la puce cochée
+   doit rester visible partout. */
+.chip.is-sel, .chip:has(input:checked) { background: var(--grenat); border-color: var(--grenat); color: var(--papier); }
+.chip.is-sel i, .chip:has(input:checked) i { color: rgba(246, 238, 223, .74); }
+.chip:has(input:focus-visible) { outline: 2px solid var(--braise); outline-offset: 3px; }
+.chip.is-soon { opacity: .45; cursor: not-allowed; text-decoration: line-through; }
+.chip.is-soon i { text-decoration: none; }
+.chip.is-soon.is-sel { background: none; border-color: rgba(42, 13, 20, .22); color: inherit; }
+
+.f-total {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 30px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(42, 13, 20, .14);
+  font-size: 14px;
+  font-style: italic;
+  color: var(--mute);
+}
+.f-total-dots { flex: 1; border-bottom: 1px dotted rgba(42, 13, 20, .38); transform: translateY(-4px); }
+.f-total-v {
+  font-family: var(--display);
+  font-style: normal;
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 400;
+  color: var(--grenat);
+  white-space: nowrap;
+}
+
+.f-letter { margin: 0 0 20px; font-size: clamp(16px, 1.7vw, 19px); font-family: var(--display); }
+.f-inline { display: inline; }
+.f-letter input, .f-letter textarea {
+  font-family: var(--body);
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--encre);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid rgba(42, 13, 20, .32);
+  padding: 2px 4px 5px;
+  transition: border-color .35s var(--ease), background .35s var(--ease);
+}
+.f-letter input { width: clamp(120px, 30%, 190px); }
+.f-letter input:focus, .f-letter textarea:focus {
+  outline: 0;
+  border-color: var(--grenat);
+  background: rgba(106, 19, 36, .05);
+}
+.f-letter input::placeholder, .f-letter textarea::placeholder { color: rgba(123, 99, 88, .7); font-style: italic; }
+.f-letter input.is-bad, .f-letter textarea.is-bad { border-color: var(--braise); background: rgba(168, 34, 60, .08); }
+
+.f-block { display: grid; gap: 10px; }
+.f-block textarea { width: 100%; resize: vertical; line-height: 1.7; }
+
+.f-hint { display: flex; gap: 10px; margin: 26px 0 18px; font-size: 13px; color: var(--mute); }
+.f-hint::before { content: "✉"; color: var(--grenat); }
+
+.btn-send { width: 100%; background: var(--grenat); color: var(--papier); padding: 19px; }
+.btn-send:hover { background: var(--braise); }
+
+.f-legal { margin: 14px 0 0; font-size: 12px; color: var(--mute); text-align: center; }
+.f-legal.is-bad { color: var(--braise); }
+
+
+/* ══════════ PIED ══════════ */
+
+.foot { position: relative; padding: clamp(70px, 9vw, 120px) var(--gut) 34px; color: var(--papier); }
+.foot-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) repeat(2, minmax(0, 1fr));
+  gap: clamp(32px, 5vw, 70px);
+}
+.logo-foot { width: clamp(180px, 22vw, 260px); }
+.foot-tag { margin: 10px 0 18px; }
+.foot-tag .scr { font-size: 20px; color: var(--sable); }
+.foot-txt { margin: 0; max-width: 42ch; font-size: 14px; color: rgba(246, 238, 223, .62); }
+
+.foot-col { display: flex; flex-direction: column; gap: 11px; }
+.foot-col h3 {
+  margin: 0 0 6px;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .45);
+}
+.foot-col a, .foot-col span { font-size: 14px; color: rgba(246, 238, 223, .8); }
+.foot-col a { transition: color .35s var(--ease); }
+.foot-col a:hover { color: var(--papier); }
+
+.foot-base {
+  max-width: 1240px;
+  margin: clamp(50px, 7vw, 86px) auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(246, 238, 223, .14);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(246, 238, 223, .46);
+}
+.foot-base p { margin: 0; }
+.foot-soc { display: flex; gap: 22px; }
+.foot-soc a { transition: color .35s var(--ease); }
+.foot-soc a:hover { color: var(--papier); }
+
+
+/* ══════════ MOUVEMENTS D'APPARITION ══════════ */
+
+[data-rise] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity .9s var(--ease), transform 1s var(--ease);
+}
+[data-rise].is-in { opacity: 1; transform: none; }
+.line[data-rise] { opacity: 1; transform: none; }
+.line[data-rise] > span { transform: translateY(104%); transition: transform 1.05s var(--ease); }
+.line[data-rise].is-in > span { transform: none; }
+
+/* Découpe en mots : chaque mot est un morceau de
+   papier qui retombe en place, légèrement de
+   travers avant de se ranger. */
+.w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: .14em;
+  margin-bottom: -.14em;
+}
+.w > i {
+  display: inline-block;
+  font-style: inherit;
+  transform: translateY(110%) rotate(5deg);
+  transition: transform .9s var(--ease);
+  transition-delay: calc(var(--w) * 48ms);
+}
+[data-split].is-in .w > i { transform: none; }
+.uni-item h3 .w > i { transition-duration: .7s; transition-delay: calc(var(--w) * 42ms); }
+.uni-item.is-on h3 .w > i { transform: none; }
+
+
+/* ══════════════════════════════════════════════
+   ADAPTATIONS
+   ══════════════════════════════════════════════ */
+
+@media (max-width: 1080px) {
+  .cmd-grid { grid-template-columns: 1fr; }
+  /* En une seule colonne, l'adhérence ferait flotter
+     la promesse par-dessus le bon qu'on remplit. */
+  .cmd-side { position: static; }
+  .foot-grid { grid-template-columns: 1fr 1fr; }
+  .foot-brand { grid-column: 1 / -1; }
+  .book { width: 40vw; }
+  .album-copy { width: 42vw; }
+}
+
+@media (max-width: 860px) {
+  body { font-size: 16px; }
+
+  .nav { gap: 14px; padding: 8px 8px 8px 18px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .nav-mark { width: 76px; }
+
+  .hero { padding-bottom: 190px; }
+  .hero-meta { gap: 22px; bottom: 100px; }
+  .hero-hint { left: var(--gut); right: auto; bottom: 56px; }
+  .hint-fine { display: none; }
+  .hint-touch { display: inline; }
+  .tr { width: clamp(104px, 30vw, 150px); }
+
+  /* Sur un pouce, feuilleter vole le défilement au
+     lieu de le servir : l'album se déroule, chaque
+     création devient une page posée à plat. */
+  .album-track { height: auto; }
+  .album-stage { position: relative; height: auto; overflow: visible; }
+  .album-bg, .album-dots, .book { display: none; }
+  .album-label, .album-h { position: static; }
+  .album-label { padding: 110px var(--gut) 0; }
+  .album-h { padding: 10px var(--gut) 0; }
+
+  .album-copy { position: static; width: auto; transform: none; }
+  .uni-item {
+    position: static;
+    width: auto;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    padding: 58px var(--gut) 66px;
+    background: linear-gradient(168deg, var(--pc), var(--pd));
+  }
+  .uni-item h3 .w > i { transform: none; }
+  .uni-mob {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 28px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .34);
+  }
+
+  .dood-layer { display: none; }
+  .patch { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .patch li.pt-w { grid-column: span 2; }
+  .patch li.pt-xl { grid-row: span 1; }
+  .pt-xl .pt-face { min-height: 136px; }
+
+  .proc-thread { left: 14px; width: 60px; transform: none; }
+  .step, .step:nth-child(odd), .step:nth-child(even) {
+    width: auto;
+    text-align: left;
+    justify-self: stretch;
+    padding-left: 58px;
+  }
+
+  .foot-grid { grid-template-columns: 1fr; }
+  .f-letter input { width: 46%; }
+}
+
+@media (max-width: 520px) {
+  .hero-meta li:last-child { display: none; }
+  .chips { gap: 7px; }
+  .chip { padding: 9px 14px; font-size: 13px; }
+  .f-letter input { width: 100%; }
+  .f-inline { display: grid; gap: 6px; }
+  .patch { grid-template-columns: 1fr; }
+  .patch li.pt-w { grid-column: span 1; }
+}
+
+
+/* ══════════ MOUVEMENT RÉDUIT ══════════
+   Tout ce qui bouge s'arrête, rien ne disparaît. */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+
+  [data-rise] { opacity: 1; transform: none; }
+  .line[data-rise] > span { transform: none; }
+  .w > i { transform: none !important; }
+  .trail { display: none; }
+  .cur { display: none !important; }
+  body.has-pearl { cursor: auto; }
+  .nav { transform: translate(-50%, 0); opacity: 1; }
+  .hero-hint { display: none; }
+  .pre { display: none; }
+
+  .album-track { height: auto; }
+  .album-stage { position: relative; height: auto; overflow: visible; }
+  .album-bg, .album-dots, .book { display: none; }
+  .album-label, .album-h { position: static; }
+  .album-label { padding: 110px var(--gut) 0; }
+  .album-h { padding: 10px var(--gut) 0; }
+  .album-copy { position: static; width: auto; transform: none; }
+  .uni-item {
+    position: static;
+    width: auto;
+    transform: none;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    padding: 58px var(--gut) 66px;
+    background: linear-gradient(168deg, var(--pc), var(--pd));
+  }
+  .uni-mob {
+    display: block;
+    width: min(560px, 100%);
+    aspect-ratio: 4 / 3;
+    margin-bottom: 28px;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, .34);
+  }
+
+  .quote { position: static; opacity: 1; visibility: visible; transform: none; margin-bottom: 40px; }
+  .temo-stage { min-height: 0; }
+  .temo-dots { display: none; }
+  .thread-ink { stroke-dashoffset: 0; }
+}
